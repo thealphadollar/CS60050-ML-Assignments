@@ -111,7 +111,7 @@ def _1b_fitting():
         print(f"Parameters: {coeff_vals}\t\t")
         print(f"Squared Error on Test Data: {test_error}\n")
 
-        generating predicted values and saving as predicted_labels_n.csv where n is the degree of polynomial
+        # generating predicted values and saving as predicted_labels_n.csv where n is the degree of polynomial
         data = [[x, poly_calc(x, coeff_vals)] for x in test_data['Feature']]
         predicted_labels = pd.DataFrame(data, columns=["Feature", "Label"])
         predicted_labels.to_csv(f'predicted_labels_{n}.csv', index=False)
