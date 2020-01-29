@@ -104,7 +104,7 @@ def _1b_fitting():
         prev_jtheta = None
         cur_jtheta = cost_function(train_data['Feature'], train_data[' Label'], len(train_data.index), coeff_vals)
         # setting convergence when the difference between consecutive error is less than .001
-        while (prev_jtheta is None or abs(prev_jtheta - cur_jtheta) > 0.001):
+        while (prev_jtheta is None or abs(prev_jtheta - cur_jtheta) > 0.00001):
             descent_vals = []
             for x_power in range(n+1):
                 descent_vals.append(calc_descent(train_data['Feature'], train_data[' Label'], len(train_data.index), coeff_vals, x_power, learning_rate))
@@ -118,14 +118,21 @@ def _1b_fitting():
         all_test_error.append(test_error)
         print(f"Parameters: {coeff_vals}")
         print(f"Squared Error on Test Data: {test_error}\n")
+        
+        # generating predicted values and saving as predicted_labels_n.csv where n is the degree of polynomial
+        data = [[x, poly_calc(x, coeff_vals)] for x in test_data['Feature']]
+        predicted_labels = pd.DataFrame(data, columns=["Feature", "Label"])
+        predicted_labels.to_csv(f'predicted_labels_{n}.csv')
 
 # plotting the predicted polynomials, answer to 2a
 def _2a_plots():
     for index, coeffs in enumerate(predicted_parameters):
-        plt.scatter(train_data['Feature'], poly_calc(train_data['Feature'], coeffs))
+        plot_on = np.linspace(train_data['Feature'].min(), train_data['Feature'].max())
+        plt.plot(plot_on, poly_calc(plot_on, coeffs))
         plt.xlabel("Feature")
         plt.ylabel("Label")
         plt.title(f"Polynomial of Degree {index+1}")
+        print(f"Plot for polynomial with coefficients {coeffs}")
         plt.show()
 
 # plotting the squared error for training and test data for the values of n
@@ -180,9 +187,10 @@ def _3a_lasso():
         test_errors = []
         for lambd in [.25, .5, .75, 1]:
             print(f"=========== Lasso Regularisation {curve_type}: Polynomial Degree {n} Lambda {lambd} ===========")
+            print(f"Polynomial is: {curve}")
             coeff_vals = copy(curve)
             prev_jtheta = None
-            cur_jtheta = cost_function(train_data['Feature'], train_data[' Label'], len(train_data.index), coeff_vals) + (lambd * sum([abs(x) for x in coeff_vals]))
+            cur_jtheta = cost_function(train_data['Feature'], train_data[' Label'], len(train_data.index), coeff_vals) + ((lambd * sum([abs(x) for x in coeff_vals])) / (2 * len(test_data.index)))
             # setting convergence when the difference between consecutive error is less than .001
             while (prev_jtheta is None or abs(prev_jtheta - cur_jtheta) > 0.001):
                 descent_vals = []
@@ -191,14 +199,15 @@ def _3a_lasso():
                 for index, descent_val in enumerate(descent_vals):
                     coeff_vals[index] = coeff_vals[index] - descent_val
                 prev_jtheta = cur_jtheta
-                cur_jtheta = cost_function(train_data['Feature'], train_data[' Label'], len(train_data.index), coeff_vals) + (lambd * sum([abs(x) for x in coeff_vals]))
-            test_error = cost_function(test_data['Feature'], test_data[' Label'], len(test_data.index), coeff_vals) + (lambd * sum([abs(x) for x in coeff_vals]))
+                cur_jtheta = cost_function(train_data['Feature'], train_data[' Label'], len(train_data.index), coeff_vals) + ((lambd * sum([abs(x) for x in coeff_vals])) / (2 * len(test_data.index))))
+            test_error = cost_function(test_data['Feature'], test_data[' Label'], len(test_data.index), coeff_vals) + ((lambd * sum([abs(x) for x in coeff_vals])) / (2 * len(test_data.index))))
             curves.append(coeff_vals)
-            train_errors.append(cur_jtheta)
-            test_errors.append(test_error)
-            print(f"Parameters: {coeff_vals}")
-            print(f"Lasso Error on Test Data: {test_error}\n")
-            print(f"Squared Error on Test Data: {test_error - (lambd * sum([abs(x) for x in coeff_vals]))}\n")
+            # storing squared (not lasso) train and test errors for later use in plotting
+            train_errors.append(cur_jtheta - ((lambd * sum([abs(x) for x in coeff_vals])) / (2 * len(test_data.index)))))
+            test_errors.append(test_error - ((lambd * sum([abs(x) for x in coeff_vals])) / (2 * len(test_data.index)))))
+            print(f"New Parameters: {coeff_vals}")
+            print(f"Lasso Error on Test Data: {test_error}")
+            print(f"Squared Error on Test Data: {test_error - ((lambd * sum([abs(x) for x in coeff_vals])) / (2 * len(test_data.index))))}\n")
         result_curves.append(curves)
         lasso_training_errors.append(train_errors)
         lasso_test_errors.append(test_errors)
@@ -260,9 +269,10 @@ def _3b_ridge():
         test_errors = []
         for lambd in [.25, .5, .75, 1]:
             print(f"=========== Ridge Regularisation {curve_type}: Polynomial Degree {n} Lambda {lambd} ===========")
+            print(f"Polynomial is: {curve}")
             coeff_vals = copy(curve)
             prev_jtheta = None
-            cur_jtheta = cost_function(train_data['Feature'], train_data[' Label'], len(train_data.index), coeff_vals) + (lambd * sum([x**2 for x in coeff_vals]))
+            cur_jtheta = cost_function(train_data['Feature'], train_data[' Label'], len(train_data.index), coeff_vals) + ((lambd * sum([x**2 for x in coeff_vals])) / (2 * len(train_data.index)))
             # setting convergence when the difference between consecutive error is less than .001
             while (prev_jtheta is None or abs(prev_jtheta - cur_jtheta) > 0.001):
                 descent_vals = []
@@ -271,14 +281,15 @@ def _3b_ridge():
                 for index, descent_val in enumerate(descent_vals):
                     coeff_vals[index] = coeff_vals[index] - descent_val
                 prev_jtheta = cur_jtheta
-                cur_jtheta = cost_function(train_data['Feature'], train_data[' Label'], len(train_data.index), coeff_vals) + (lambd * sum([x**2 for x in coeff_vals]))
-            test_error = cost_function(test_data['Feature'], test_data[' Label'], len(test_data.index), coeff_vals) + (lambd * sum([x**2 for x in coeff_vals]))
+                cur_jtheta = cost_function(train_data['Feature'], train_data[' Label'], len(train_data.index), coeff_vals) + ((lambd * sum([x**2 for x in coeff_vals])) / (2 * len(train_data.index)))
+            test_error = cost_function(test_data['Feature'], test_data[' Label'], len(test_data.index), coeff_vals) + ((lambd * sum([x**2 for x in coeff_vals])) / (2 * len(train_data.index)))
             curves.append(coeff_vals)
-            train_errors.append(cur_jtheta)
-            test_errors.append(test_error)
-            print(f"Parameters: {coeff_vals}")
-            print(f"Ridge Error on Test Data: {test_error}\n")
-            print(f"Squared Error on Test Data: {test_error - (lambd * sum([x**2 for x in coeff_vals]))}\n")
+            # storing squared train and test error for plotting
+            train_errors.append(cur_jtheta - ((lambd * sum([x**2 for x in coeff_vals])) / (2 * len(train_data.index))))
+            test_errors.append(test_error - ((lambd * sum([x**2 for x in coeff_vals])) / (2 * len(train_data.index))))
+            print(f"New Parameters: {coeff_vals}")
+            print(f"Ridge Error on Test Data: {test_error}")
+            print(f"Squared Error on Test Data: {test_error - ((lambd * sum([x**2 for x in coeff_vals])) / (2 * len(train_data.index)))}\n")
         result_curves.append(curves)
         ridge_training_errors.append(train_errors)
         ridge_test_errors.append(test_errors)
@@ -321,10 +332,11 @@ def _3b_ridge():
         fig.tight_layout()
         plt.show()
 
-
-_1a_plot()
+# Comment parts which are not to be run.
+# Note: Parts 2a, 2b, 3a, 3b depend on part 1b and hence can't be run without 1b.
+# _1a_plot()
 _1b_fitting()
-_2a_plots()
-_2b_plots()
-_3a_lasso()
-_3b_ridge()
+# _2a_plots()
+# _2b_plots()
+# _3a_lasso()
+# _3b_ridge()
