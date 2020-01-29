@@ -14,6 +14,7 @@ except FileNotFoundError:
     train_data = pd.read_csv(input('Enter path to training data: '))
 train_data_feature = train_data['Feature'].to_numpy()
 train_data_label = train_data[' Label'].to_numpy()
+
 # loading testing data
 try:
     test_data = pd.read_csv('test.csv')
@@ -21,6 +22,7 @@ except FileNotFoundError:
     test_data = pd.read_csv(input('Enter path to test data: '))    
 test_data_feature = test_data['Feature'].to_numpy()
 test_data_label = test_data[' Label'].to_numpy()
+
 # global variable to store training error, test error and predicted parameters
 # index 0 corresponds to polynomial of degree 1 and so on
 all_train_error = []
@@ -29,6 +31,7 @@ predicted_parameters = []
 # highest degree polynomial to build starting from 0
 till_n = 9
 learning_rate = 0.05
+# size of the training data
 m = train_data_feature.size
 
 # ======================
@@ -45,7 +48,7 @@ def poly_calc(x, coeffs):
 
 # taking variables, returns the cost
 def cost_function(X, Y, m, coeffs):
-    # calculating sums
+    # calculates sigma of polynomial values over all X minus Y
     sum_ = sum([(poly_calc(X.iloc[ind], coeffs)-Y.iloc[ind])**2 for ind in range(m)])
     return sum_ / (2*m)
 
@@ -86,21 +89,27 @@ def _1b_fitting():
     # varying n from 1 to 9
     for n in range(1, till_n+1):
         print(f"=========== Polynomial Degree {n} ===========")
-        # setting initial value of the parameters as 1
+        # creating numpy vector with feature data
         X = np.zeros(shape=(m,n+1))
         for i in range(m):
             for j in range(n+1):
                 X[i][j] = np.power(train_data_feature[i], j)
+        # setting initial value of the parameters as 1
         coeff_vals = np.ones(n+1)
+        # stores previous cost
         prev_jtheta = None
+        # calculate loss
         loss = np.dot(X, coeff_vals) - train_data_label
+        # current cost
         cur_jtheta = np.sum(loss ** 2) / (2 * m)
         # setting convergence when the difference between consecutive error is less than 0.00000001
         while (prev_jtheta is None or abs(prev_jtheta - cur_jtheta) > 0.00000001):
-            # gradient descent with vector notation
+            # gradient descent with vector notation, simultaneous calculation
             descent_vals = np.dot(X.transpose(), loss) * (learning_rate / m)
+            # update all coefficients with descent
             coeff_vals = coeff_vals - descent_vals
             prev_jtheta = cur_jtheta
+            # calculate new cost
             loss = np.dot(X, coeff_vals) - train_data_label
             cur_jtheta = np.sum(loss ** 2) / (2 * m)
             print(f"Difference between consecutive costs: {abs(prev_jtheta - cur_jtheta)}\t", end="\r", flush=True)
@@ -115,6 +124,7 @@ def _1b_fitting():
         data = [[x, poly_calc(x, coeff_vals)] for x in test_data['Feature']]
         predicted_labels = pd.DataFrame(data, columns=["Feature", "Label"])
         predicted_labels.to_csv(f'predicted_labels_{n}.csv', index=False)
+    # storing all predicted polynomials in "predicted_parameters.txt"
     with open("predicted_parameters.txt", "w+") as f:
         for index, parameter in enumerate(predicted_parameters):
             f.write(f"Predicted Parameters for Degree {index+1}: {parameter}\n")
@@ -163,7 +173,10 @@ def _2b_plots():
     autolabel(rects2)
     fig.tight_layout()
     plt.show()
-    
+
+# solution to part 3a, lasso regularisation
+# the function is very similar to 2b fitting except that we do not start from all 1s
+# and used the improvised cost function
 def _3a_lasso():
     best_curve, worst_curve = get_extreme_curves()
     result_curves = []
@@ -177,6 +190,7 @@ def _3a_lasso():
         else:
             curve_type = "Worst Curve"
         n = len(curve) - 1
+        # create numpy vector from feature data
         X = np.zeros(shape=(m,n+1))
         for i in range(m):
             for j in range(n+1):
@@ -207,11 +221,11 @@ def _3a_lasso():
             print(f"New Parameters: {coeff_vals}")
             print(f"Lasso Error on Test Data: {test_error}")
             print(f"Squared Error on Test Data: {test_error - ((lambd * sum([abs(x) for x in coeff_vals])) / (2 * len(test_data.index)))}\n")
-            print(f"Squared Error on Train Data: {cur_jtheta - ((lambd * sum([abs(x) for x in coeff_vals])) / (2 * m))}\n")
         result_curves.append(curves)
         lasso_training_errors.append(train_errors)
         lasso_test_errors.append(test_errors)
     
+    # creating the graphs for all lambda for each of the two curves
     for i in range(2):
         # plotting test and train error for varying lambda
         labels = [0.25, 0.5, 0.75, 1]
@@ -250,7 +264,9 @@ def _3a_lasso():
         fig.tight_layout()
         plt.show()
 
-
+# solution to part 3b, ridge regularisation
+# the function is very similar to 2b fitting except that we do not start from all 1s
+# and used the improvised cost function
 def _3b_ridge():
     best_curve, worst_curve = get_extreme_curves()
     result_curves = []
@@ -298,6 +314,7 @@ def _3b_ridge():
         ridge_training_errors.append(train_errors)
         ridge_test_errors.append(test_errors)
     
+    # creating the graphs for all lambda for each of the two curves
     for i in range(2):
         # plotting test and train error for varying lambda
         labels = [0.25, 0.5, 0.75, 1]
