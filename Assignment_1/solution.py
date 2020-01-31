@@ -208,7 +208,10 @@ def _3a_lasso():
             # setting convergence when the difference between consecutive error is less than 0.00000001
             while (prev_jtheta is None or abs(prev_jtheta - cur_jtheta) > 0.00000001):
                 descent_vals = np.dot(X.transpose(), loss) * (learning_rate / m)
-                coeff_vals = coeff_vals - descent_vals
+                # using regularised descent values, saving zeroth term to put back as in later on.
+                initial_coeff = coeff_vals[0]
+                coeff_vals = (coeff_vals * (1-learning_rate *(lambd/m))) - descent_vals
+                coeff_vals[0] = initial_coeff - descent_vals[0]
                 prev_jtheta = cur_jtheta
                 loss = np.dot(X, coeff_vals) - train_data_label
                 cur_jtheta = (np.sum(loss ** 2) + (lambd * sum([abs(x) for x in coeff_vals])))/ (2 * m)
@@ -218,7 +221,7 @@ def _3a_lasso():
             # storing squared (not lasso) train and test errors for later use in plotting
             train_errors.append(cur_jtheta - ((lambd * sum([abs(x) for x in coeff_vals])) / (2 * m)))
             test_errors.append(test_error - ((lambd * sum([abs(x) for x in coeff_vals])) / (2 * len(test_data.index))))
-            print(f"New Parameters: {coeff_vals}")
+            print(f"New Parameters: {coeff_vals}\t\t")
             print(f"Lasso Error on Test Data: {test_error}")
             print(f"Squared Error on Test Data: {test_error - ((lambd * sum([abs(x) for x in coeff_vals])) / (2 * len(test_data.index)))}\n")
         result_curves.append(curves)
@@ -297,7 +300,10 @@ def _3b_ridge():
             # setting convergence when the difference between consecutive error is less than 0.00000001
             while (prev_jtheta is None or abs(prev_jtheta - cur_jtheta) > 0.00000001):
                 descent_vals = np.dot(X.transpose(), loss) * (learning_rate / m)
-                coeff_vals = coeff_vals - descent_vals
+                # using regularised descent values, saving zeroth term to put back as in later on.
+                initial_coeff = coeff_vals[0]
+                coeff_vals = (coeff_vals * (1-learning_rate * (lambd/m))) - descent_vals
+                coeff_vals[0] = initial_coeff - descent_vals[0]
                 prev_jtheta = cur_jtheta
                 loss = np.dot(X, coeff_vals) - train_data_label
                 cur_jtheta = (np.sum(loss ** 2) + (lambd * sum([x**2 for x in coeff_vals])))/ (2 * m)
@@ -307,7 +313,7 @@ def _3b_ridge():
             # storing squared train and test error for plotting
             train_errors.append(cur_jtheta - ((lambd * sum([x**2 for x in coeff_vals])) / (2 * m)))
             test_errors.append(test_error - ((lambd * sum([x**2 for x in coeff_vals])) / (2 * len(test_data.index))))
-            print(f"New Parameters: {coeff_vals}")
+            print(f"New Parameters: {coeff_vals}\t\t")
             print(f"Ridge Error on Test Data: {test_error}")
             print(f"Squared Error on Test Data: {test_error - ((lambd * sum([x**2 for x in coeff_vals])) / (2 * len(test_data.index)))}\n")
         result_curves.append(curves)
