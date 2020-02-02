@@ -12,4 +12,4 @@ of questions asked in the assignment. Please do read the report for more informa
 NOTE: The lasso and ridge parts take quite sometime (around 15 minutes) since the criteria for convergence is pretty tight. For testing them, please relax the 
 criteria for convergence on Line Number: 282 and 195 for ridge and lasso respectively.
 
-If the fitting loop takes time (doesn't take much time, around 2-3 minutes), please relax the criteria for convergence on line number 99
+If the fitting loop takes time (doesn't take much time, around 2-3 minutes), please relax the criteria for convergence on line number 99. Except part 1b all parts do not take much time and can be run independently since all information is stored in json files.
