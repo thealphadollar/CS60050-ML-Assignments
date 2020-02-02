@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
 from copy import copy
+import json
 
 # loading training data
 try:
@@ -54,6 +55,13 @@ def cost_function(X, Y, m, coeffs):
 
 # returns best, worst curve based on training data error
 def get_extreme_curves():
+    # loading data from json files
+    with open("test_error.json", 'r') as f:
+        all_test_error = json.load(f)
+    with open("train_error.json", 'r') as f:
+        all_train_error = json.load(f)
+    with open("parameters.json", 'r') as f:
+        predicted_parameters = json.load(f)
     best_train_curve = None
     worst_train_curve = None
     min_train_error = min(all_train_error)
@@ -63,7 +71,7 @@ def get_extreme_curves():
             best_train_curve = predicted_parameters[index]
         if train_error == max_train_error:
             worst_train_curve = predicted_parameters[index]
-    return best_train_curve, worst_train_curve
+    return np.array(best_train_curve), np.array(worst_train_curve)
 
 # =========================
 # Solutions Functions Below
@@ -113,8 +121,8 @@ def _1b_fitting():
             loss = np.dot(X, coeff_vals) - train_data_label
             cur_jtheta = np.sum(loss ** 2) / (2 * m)
             print(f"Difference between consecutive costs: {abs(prev_jtheta - cur_jtheta)}\t", end="\r", flush=True)
-        predicted_parameters.append(coeff_vals)
-        all_train_error.append(cur_jtheta)
+        predicted_parameters.append(coeff_vals.tolist())
+        all_train_error.append(cur_jtheta.tolist())
         test_error = cost_function(test_data['Feature'], test_data[' Label'], len(test_data.index), coeff_vals)
         all_test_error.append(test_error)
         print(f"Parameters: {coeff_vals}\t\t")
@@ -128,9 +136,22 @@ def _1b_fitting():
     with open("predicted_parameters.txt", "w+") as f:
         for index, parameter in enumerate(predicted_parameters):
             f.write(f"Predicted Parameters for Degree {index+1}: {parameter}\n")
+    # saving parameters to load in later functions
+    with open("parameters.json", 'w+') as f:
+        json.dump(predicted_parameters, f)
+    # saving train errors to load in later functions
+    with open("train_error.json", 'w+') as f:
+        json.dump(all_train_error, f)
+    # saving test errors to load in later functions
+    with open("test_error.json", 'w+') as f:
+        json.dump(all_test_error, f)
+        
 
 # plotting the predicted polynomials, answer to 2a
 def _2a_plots():
+    # loading data from json file
+    with open("parameters.json", 'r') as f:
+        predicted_parameters = json.load(f)
     for index, coeffs in enumerate(predicted_parameters):
         plot_on = np.linspace(train_data['Feature'].min(), train_data['Feature'].max())
         plt.plot(plot_on, poly_calc(plot_on, coeffs))
@@ -142,6 +163,11 @@ def _2a_plots():
 
 # plotting the squared error for training and test data for the values of n
 def _2b_plots():
+    # loading data from json files
+    with open("test_error.json", 'r') as f:
+        all_test_error = json.load(f)
+    with open("train_error.json", 'r') as f:
+        all_train_error = json.load(f)
     labels = [str(x) for x in range(1,till_n+1)]
 
     x = np.arange(len(labels))  # the label locations
@@ -360,7 +386,7 @@ def _3b_ridge():
         plt.show()
 
 # Comment parts which are not to be run.
-# Note: Parts 2a, 2b, 3a, 3b depend on part 1b and hence can't be run without 1b.
+# Note: Parts 2a, 2b, 3a, 3b depend on part 1b and hence if they are run without part 1b, they'll load data from JSON files.
 _1a_plot()
 _1b_fitting()
 _2a_plots()
