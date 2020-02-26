@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from sklearn.linear_model import LogisticRegression
 from os import path
 
 def g(inpu):
@@ -25,9 +26,16 @@ def main():
 
     learning_rate = 0.05
 
-    m,n = train_data_feature.shape
-
+    logregressor = LogisticRegression(penalty='none', solver='saga')
+    logregressor.fit(train_data_feature, train_data_label)
+    
+    # setting initial value of the parameters as 1
+    coeff_vals = [list(logregressor.intercept_)[0]]
+    coeff_vals.extend(list(logregressor.coef_)[0])
+    
+    print(f"Parameters: {coeff_vals}\t\t")
     # creating numpy vector with feature data
+    m,n = train_data_feature.shape
     X = np.zeros(shape=(m,n+1))
     for i in range(m):
         for j in range(n+1):
@@ -35,29 +43,9 @@ def main():
                 X[i][j] = 1
             else:
                 X[i][j] = train_data_feature[i][j-1]
-    # setting initial value of the parameters as 1
-    coeff_vals = np.ones(n+1)
-    # stores previous cost
-    prev_jtheta = None
-    # calculate loss
-    loss = (g(np.dot(X, coeff_vals)) - train_data_label)
-    # current cost
-    cur_jtheta = np.sum(cost(g(np.dot(X, coeff_vals)), train_data_label)) * (-1/m)
-    # setting convergence when the difference between consecutive error is less than 0.0000001
-    while (prev_jtheta is None or abs(prev_jtheta - cur_jtheta) > 0.0000001):
-        # gradient descent with vector notation, simultaneous calculation
-        descent_vals = np.dot(X.transpose(), loss) * (learning_rate / m)
-        # update all coefficients with descent
-        coeff_vals = coeff_vals - descent_vals
-        prev_jtheta = cur_jtheta
-        # calculate new cost
-        loss = (g(np.dot(X, coeff_vals)) - train_data_label)
-        cur_jtheta = np.sum(cost(g(np.dot(X, coeff_vals)), train_data_label)) * (-1/m)
-        print(f"Difference between consecutive costs: {abs(prev_jtheta - cur_jtheta)}\t", end="\r", flush=True)
-    print(f"Parameters: {list(coeff_vals)}\t\t")
-    print(f"Error on Data: {cur_jtheta}\n")
+    print(f"Error on Data: {np.sum(cost(g(np.dot(X, coeff_vals)), train_data_label)) * (-1/m)}\n")
 
-    with open(path.join(results_dir, 'parameters_manual_logistic.csv'), 'w') as f_out:
+    with open(path.join(results_dir, 'parameters_sklearn_logistic.csv'), 'w') as f_out:
         f_out.write('intercept;')
         f_out.write(';'.join(list(train_data.loc[:, train_data.columns != 'quality'].columns.values)))
         f_out.write('\n')
