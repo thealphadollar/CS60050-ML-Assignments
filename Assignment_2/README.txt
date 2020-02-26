@@ -9,3 +9,10 @@ Once the solution is running, all the requested graphs (if any) as per the quest
 ## Task 1 a
 
 Generates `data/dataset_A.csv` as per the description given in the assignment.
+
+## Task 1 b
+
+Generates `data/dataset_B.csv` as per the description given in the assignment.
+
+Apart from the last bucket, it has been assumed that the end of the range is 
+not included in the current bucket but the start of the range is included.
