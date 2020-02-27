@@ -16,3 +16,13 @@ Generates `data/dataset_B.csv` as per the description given in the assignment.
 
 Apart from the last bucket, it has been assumed that the end of the range is 
 not included in the current bucket but the start of the range is included.
+
+## Task 2 1
+
+Generates `results/parameters_manual_logistic.csv` which stores the parameters predicted by the 
+regressor. It also prints the error on the training set when run.
+
+## Task 2 2
+
+Generates `results/parameters_sklearn_logistic.csv` which stores the parameters predicted by the 
+scikit learn regressor. It also prints the error on the training set when run.

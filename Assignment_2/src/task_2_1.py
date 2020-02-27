@@ -6,7 +6,7 @@ def g(inpu):
     return (1/(1+np.exp(-inpu)))
 
 def cost(inpu, actual):
-    return (actual*np.log10(inpu)) + ((1-actual)*(np.log10(1-inpu)))
+    return (actual*np.log(inpu)) + ((1-actual)*(np.log(1-inpu)))
 
 # vectorize the function
 g_vectorized = np.vectorize(g)
@@ -40,19 +40,21 @@ def main():
     # stores previous cost
     prev_jtheta = None
     # calculate loss
-    loss = (g(np.dot(X, coeff_vals)) - train_data_label)
+    h_theta = g(np.dot(X, coeff_vals))
+    loss = (h_theta - train_data_label)
     # current cost
-    cur_jtheta = np.sum(cost(g(np.dot(X, coeff_vals)), train_data_label)) * (-1/m)
-    # setting convergence when the difference between consecutive error is less than 0.0000001
-    while (prev_jtheta is None or abs(prev_jtheta - cur_jtheta) > 0.0000001):
+    cur_jtheta = np.sum(cost(h_theta, train_data_label)) * (-1/m)
+    # setting convergence when the difference between consecutive error is less than 0.00000001
+    while (prev_jtheta is None or abs(prev_jtheta - cur_jtheta) > 0.00000001):
         # gradient descent with vector notation, simultaneous calculation
-        descent_vals = np.dot(X.transpose(), loss) * (learning_rate / m)
+        descent_vals = (np.dot(X.transpose(), loss) * learning_rate) / m
         # update all coefficients with descent
-        coeff_vals = coeff_vals - descent_vals
+        coeff_vals -= descent_vals
         prev_jtheta = cur_jtheta
         # calculate new cost
-        loss = (g(np.dot(X, coeff_vals)) - train_data_label)
-        cur_jtheta = np.sum(cost(g(np.dot(X, coeff_vals)), train_data_label)) * (-1/m)
+        h_theta = g(np.dot(X, coeff_vals))
+        loss = (h_theta - train_data_label)
+        cur_jtheta = np.sum(cost(h_theta, train_data_label)) * (-1/m)
         print(f"Difference between consecutive costs: {abs(prev_jtheta - cur_jtheta)}\t", end="\r", flush=True)
     print(f"Parameters: {list(coeff_vals)}\t\t")
     print(f"Error on Data: {cur_jtheta}\n")
