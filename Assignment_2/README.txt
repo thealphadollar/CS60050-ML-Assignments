@@ -19,10 +19,32 @@ not included in the current bucket but the start of the range is included.
 
 ## Task 2 1
 
-Generates `results/parameters_manual_logistic.csv` which stores the parameters predicted by the 
-regressor. It also prints the error on the training set when run.
+Created a manual class of Logistic Regressor with Gradient Descent and implemented required methods to use with
+sklearn cross_validator.
+
+NOTE: There is no runnable code in this python file since only the class is implemented
 
 ## Task 2 2
 
-Generates `results/parameters_sklearn_logistic.csv` which stores the parameters predicted by the 
-scikit learn regressor. It also prints the error on the training set when run.
+Tested the running of LogisticRegressor from sklearn and prints the parameters as well as error calculated 
+by method prescribed in class.
+
+## Task 2 3
+
+Run both the regressors with cross validation and print the average accuracy, precision and recall for both train and test data.
+
+---SK Learn Logistic Regression---
+Average Train Accuracy: 0.8808630393996247
+Average Train Precision: 0.7553184763756969
+Average Train Recall: 0.655281563773114
+Average Test Accuracy: 0.8749218261413384
+Average Test Precision: 0.7319885643724788
+Average Test Recall: 0.6400490563610913
+
+---Self Written Logistic Regression---
+Average Train Accuracy: 0.8836772983114446
+Average Train Precision: 0.7707684928748993
+Average Train Recall: 0.6426513828478065
+Average Test Accuracy: 0.8730456535334584
+Average Test Precision: 0.7354169832248685
+Average Test Recall: 0.627613894780464
