@@ -26,7 +26,7 @@ with open(path.join(src_dir, 'winequality-red.csv'), 'r') as f_in:
         for key in vals.keys():
             # handle quality as per the given conditions
             if key == 'quality':
-                if int(vals['quality'])<4:
+                if int(vals['quality'])<=4:
                     dictionary_red_wine[index]['quality'] = 0
                 elif int(vals['quality'])>6:
                     dictionary_red_wine[index]['quality'] = 2

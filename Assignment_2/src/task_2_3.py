@@ -24,8 +24,8 @@ def main():
 
     # set required scoring parameters
     scoring = {'accu': 'accuracy',
-           'prec': 'precision_macro',
-           'reca': 'recall_macro'}
+           'prec': 'precision',
+           'reca': 'recall'}
 
     # cross validate sklearn with 3 fold and calculating train accuracy, precision and recall as well
     scores = cross_validate(sk_logregressor, train_data_feature, train_data_label, cv=3, scoring=scoring, return_train_score=True)
