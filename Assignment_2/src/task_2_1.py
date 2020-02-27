@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 from os import path
-import json
 
 def g(inpu):
     return (1/(1+np.exp(-inpu)))

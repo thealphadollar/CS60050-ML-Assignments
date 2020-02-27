@@ -29,6 +29,8 @@ NOTE: There is no runnable code in this python file since only the class is impl
 Tested the running of LogisticRegressor from sklearn and prints the parameters as well as error calculated 
 by method prescribed in class.
 
+NOTE: This testing has been done on the entire data without split into train-test.
+
 ## Task 2 3
 
 Run both the regressors with cross validation and print the average accuracy, precision and recall for both train and test data.
