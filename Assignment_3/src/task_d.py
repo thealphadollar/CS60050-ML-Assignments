@@ -13,14 +13,14 @@ def main():
     pca = PCA(n_components=100)
     tfidf_array = pca.fit_transform(tfidf_matrix.toarray())
     # tfidf_array.shape
-    
+
     # Agglomerative Reduced
     agglo = AgglomerativeClustering(path="clusters/agglomerative_reduced.txt")
-    agglo.fit(tfidf_matrix.toarray())
+    agglo.fit(tfidf_array)
 
     # KMeans Reduced
     kmeans = KMeans(path="clusters/kmeans_reduced.txt", iters=1000)
-    kmeans.fit(tfidf_matrix.toarray())
+    kmeans.fit(tfidf_array)
 
 if __name__=="__main__":
     main()
