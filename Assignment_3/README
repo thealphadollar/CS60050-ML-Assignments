@@ -4,6 +4,6 @@ Python 3.6.9 was used for the assignment.
 
 
 NMI Score For Agglomerative Clustering: 6.498912668993189
-NMI Score For Reduced Agglomerative Clustering: 6.498912668993189
-NMI Score For KMeans Clustering: 2.3619372051491867
-NMI Score For Reduced KMeans Clustering: 2.338451566892089
+NMI Score For Reduced Agglomerative Clustering: 6.1744464743334175
+NMI Score For KMeans Clustering: 2.3569105017441427
+NMI Score For Reduced KMeans Clustering: 2.3093117585738687
