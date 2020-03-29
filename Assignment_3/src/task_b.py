@@ -16,7 +16,7 @@ class AgglomerativeClustering():
     Recursively merges the pair of clusters that minimally increases
     a given linkage distance.
     """
-    def __init__(self, n_clusters=8, affinity='cosine', linkage='single', path="../clusters/agglomerative.txt"):
+    def __init__(self, n_clusters=8, affinity='cosine', linkage='single', path="clusters/agglomerative.txt"):
         self._n_clusters = n_clusters
         self._affinity = affinity
         self._linkage = linkage
@@ -119,7 +119,7 @@ class AgglomerativeClustering():
                 f_open.write('\n')
 
 def main():
-    with open('../data/tdidf_vector.pkl', 'rb') as f_open:
+    with open('data/tdidf_vector.pkl', 'rb') as f_open:
         tfidf_matrix = pkl.load(f_open)
     # tfidf_matrix.toarray().shape
     agglo = AgglomerativeClustering()
