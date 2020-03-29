@@ -42,7 +42,8 @@ class NMI():
         self._load_data_from_file(path)
         cluster_entropy = self._enp_clst()
         cond_entropy = self._enp_cond()
-        nmi = 2*cond_entropy/(self._enp_class+cluster_entropy)
+        # print(self._enp_class, cond_entropy, cluster_entropy)
+        nmi = 2*(self._enp_class - cond_entropy)/(self._enp_class+cluster_entropy)
 #         print(f"NMI: {nmi}")
         return nmi
         
@@ -86,10 +87,23 @@ class NMI():
                                     for x in self._pred_list])
         
     def _enp_cond_helper(self, cur_clust, num_ele):
-        unique, counts = np.unique(np.asarray(cur_clust), return_counts=True)
-        unq_cnt_dict = dict(zip(unique, counts))
+        unq_cnt_dict = {
+            0:0,
+            1:0,
+            2:0,
+            3:0,
+            4:0,
+            5:0,
+            6:0,
+            7:0
+        }
+        for ind,val in enumerate(cur_clust):
+            unq_cnt_dict[self._labels[int(val)]] += 1
+        for k,v in list(unq_cnt_dict.items()):
+            if v == 0:
+                del unq_cnt_dict[k]
         tempVal = -1 * sum([(unq_cnt_dict[key]/len(cur_clust))*np.log2(unq_cnt_dict[key]/len(cur_clust)) 
-                           for key in unq_cnt_dict.keys()])        
+                           for key in unq_cnt_dict.keys()])
         return (len(cur_clust)/num_ele)*tempVal
 
 def main():

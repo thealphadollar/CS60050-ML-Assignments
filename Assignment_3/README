@@ -3,7 +3,7 @@ Please run the code from outside the "src" directory.
 Python 3.6.9 was used for the assignment.
 
 
-NMI Score For Agglomerative Clustering: 6.498912668993189
-NMI Score For Reduced Agglomerative Clustering: 6.1744464743334175
-NMI Score For KMeans Clustering: 2.3569105017441427
-NMI Score For Reduced KMeans Clustering: 2.3093117585738687
+NMI Score For Agglomerative Clustering: 0.04724248394238959
+NMI Score For Reduced Agglomerative Clustering: 0.03404362752479454
+NMI Score For KMeans Clustering: 0.4376781957570754
+NMI Score For Reduced KMeans Clustering: 0.6013051774494758
