@@ -106,11 +106,13 @@ while(num_cluster > 8):
     num_cluster = num_cluster-1;
 
 
-#Saving the final Result in asked format
+#Saving the final Result in asked forma
+
+    
    
 file = open('../data/agglomerative.txt', 'w')
 for clust in list_cluster:
-    clust.index = sorted(clust.index)
+    clust.index.sort()
     for i in range(0, len(clust.index)):
         if(i != len(clust.index ) -1 ):
             file.write(str(clust.index[i])+',')

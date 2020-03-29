@@ -19,7 +19,7 @@ pca = PCA(n_components = 100)
 #Reducting the Principal Components to 100
 X = pca.fit_transform(X)
 
-print(X.shape)
+#print(X.shape)
 
 class cluster:
     def __init__(self, vectors, index):
@@ -100,6 +100,7 @@ while(num_cluster > 8):
    
 file = open('../data/agglomerative_reduced.txt', 'w')
 for clust in list_cluster:
+    clust.index.sort()
     for i in range(0, len(clust.index)):
         if(i != len(clust.index ) -1 ):
             file.write(str(clust.index[i])+',')

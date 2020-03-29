@@ -50,6 +50,7 @@ def get_conditional_entropy(label, cluster_list):
     for i in range(0, len(cluster_list)):
         tempE = 0
         curr_clust = cluster_list[i]
+        # print(np.asarray(curr_clust))
         for j in range(0, 8):
             countClass = 0
             if(len(curr_clust) == 0):
@@ -65,14 +66,14 @@ def get_conditional_entropy(label, cluster_list):
 
 #The final formula for nmi is applied on three values obtained from above formula
 def get_nmi(entropy_class, entropy_clust, conditional_entropy):
-    return (2*conditional_entropy)/(entropy_class+entropy_clust)
-
+    return (2*(entropy_class - conditional_entropy)/(entropy_class+entropy_clust))
 
 #The Final NMI are printed for a file with this function
 def print_nmi(file, label, entropy_class):
-    clust_list = get_list_from_file(file);
+    clust_list = get_list_from_file(file)
     entropy_clust = entropy_list(clust_list)
     conditional_entropy = get_conditional_entropy(label, clust_list)
+    print(entropy_class, conditional_entropy, entropy_clust)
     fin_nmi = get_nmi(entropy_class, entropy_clust, conditional_entropy)
     print("NMI for the Given Clustering: ", fin_nmi)
     
@@ -119,20 +120,20 @@ entropy_class = entropy_list(class_list)
 #Final Calculation of NMI Scores for the files saved in earlier tasks
 print('NMI SCORES:')
 print('For Agglomerative Clustering')
-file = open('../data/agglomerative.txt','r');
+file = open('../../clusters/agglomerative.txt','r');
 print_nmi(file, label, entropy_class)
 
 
 print('For KMeans Clustering')
-file = open('../data/kmeans.txt', 'r');
+file = open('../../clusters/kmeans.txt', 'r');
 print_nmi(file, label, entropy_class)
 
 print('For Agglomerative Clustering after PCA')
-file = open('../data/agglomerative_reduced.txt', 'r');
+file = open('../../clusters/agglomerative_reduced.txt', 'r');
 print_nmi(file, label, entropy_class)
 
 
 print('For KMeans After PCA')
-file = open('../data/kmeans_reduced.txt', 'r');
+file = open('../../clusters/kmeans_reduced.txt', 'r');
 print_nmi(file, label, entropy_class)
 
