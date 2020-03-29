@@ -65,7 +65,7 @@ class KMeans():
         doc_labels = np.zeros((X_arr.shape[0], 1))
         for i in range(self._iters):
             centroid_points = [[] for _ in range(self._n_clusters)]
-            print(f"Iteration number {i}")
+            print(f"Iteration number {i}", end="\r")
             for index, arr in enumerate(X_arr):
 #                 assign closest centroid
                 doc_labels[index] = self.closest_centroid(arr)
