@@ -4,6 +4,7 @@
 # ML-2020
 import pickle as pkl
 import numpy as np
+from random import randrange
 from numpy.linalg import norm
 
 MIN_DIST = 1e10
@@ -13,7 +14,7 @@ class KMeans():
     Recursively merges the pair of clusters that minimally increases
     a given linkage distance.
     """
-    def __init__(self, n_clusters=8, iters=300, path="../clusters/kmeans.txt"):
+    def __init__(self, n_clusters=8, iters=300, path="clusters/kmeans.txt"):
         self._n_clusters = n_clusters
         self._iters = iters
         self._path = path
@@ -64,7 +65,7 @@ class KMeans():
         doc_labels = np.zeros((X_arr.shape[0], 1))
         for i in range(self._iters):
             centroid_points = [[] for _ in range(self._n_clusters)]
-            print(f"Iteration number {i}", end="\r")
+            print(f"Iteration number {i}")
             for index, arr in enumerate(X_arr):
 #                 assign closest centroid
                 doc_labels[index] = self.closest_centroid(arr)
@@ -78,19 +79,20 @@ class KMeans():
             
 #             break if no change detected
             if np.all(self._centroids == new_centroids):
+                print("breaking early...")
                 break
             self._centroids = new_centroids
         self._results = [[] for _ in range(self._n_clusters)]
         for i, ele in enumerate(doc_labels):
             for num in ele:
-                print(num)
+                # print(num)
                 self._results[int(num)].append(i)
-        print(self._results)
+        # print(self._results)
         self.save()
     
     def save(self):
         """
-        Save the results in a sorted manner to ../clusters/agglomerative.txt
+        Save the results in a sorted manner to clusters/agglomerative.txt
         """
         sorted_results = sorted(self._results, key= lambda x: min(x))
         sorted_results = [sorted(x) for x in sorted_results]
@@ -101,10 +103,10 @@ class KMeans():
                 f_open.write('\n')
 
 def main():
-    with open('../data/tdidf_vector.pkl', 'rb') as f_open:
+    with open('data/tdidf_vector.pkl', 'rb') as f_open:
         tfidf_matrix = pkl.load(f_open)
     # tfidf_matrix.toarray().shape
-    kmeans = KMeans()
+    kmeans = KMeans(iters=1000)
     kmeans.fit(tfidf_matrix.toarray())
 
 if __name__=="__main__":
