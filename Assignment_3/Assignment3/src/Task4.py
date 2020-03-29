@@ -19,7 +19,7 @@ pca = PCA(n_components = 100)
 #Reducting the Principal Components to 100
 X = pca.fit_transform(X)
 
-#print(X.shape)
+print(X.shape)
 
 class cluster:
     def __init__(self, vectors, index):
