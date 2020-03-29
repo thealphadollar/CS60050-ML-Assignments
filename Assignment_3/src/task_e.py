@@ -28,7 +28,7 @@ class NMI():
         """
         Load original label data.
         """
-        df = pd.read_csv('../data/data_after_1a.csv')
+        df = pd.read_csv('data/data_after_1a.csv')
         self._labels = df.iloc[:, 0]
 #         print(self._labels)
         for i,val in enumerate(self._labels):
@@ -93,13 +93,13 @@ class NMI():
         return (len(cur_clust)/num_ele)*tempVal
 
 def main():
-    with open('../data/tdidf_vector.pkl', 'rb') as f_open:
+    with open('data/tdidf_vector.pkl', 'rb') as f_open:
         tfidf_matrix = pkl.load(f_open)
     nmi = NMI()
-    print(f'NMI Score For Agglomerative Clustering: {nmi.calculate("../clusters/agglomerative.txt")}')
-    print(f'NMI Score For Reduced Agglomerative Clustering: {nmi.calculate("../clusters/agglomerative_reduced.txt")}')
-    print(f'NMI Score For KMeans Clustering: {nmi.calculate("../clusters/kmeans.txt")}')
-    print(f'NMI Score For Reduced KMeans Clustering: {nmi.calculate("../clusters/kmeans_reduced.txt")}')
+    print(f'NMI Score For Agglomerative Clustering: {nmi.calculate("clusters/agglomerative.txt")}')
+    print(f'NMI Score For Reduced Agglomerative Clustering: {nmi.calculate("clusters/agglomerative_reduced.txt")}')
+    print(f'NMI Score For KMeans Clustering: {nmi.calculate("clusters/kmeans.txt")}')
+    print(f'NMI Score For Reduced KMeans Clustering: {nmi.calculate("clusters/kmeans_reduced.txt")}')
 
 if __name__=="__main__":
     main()
