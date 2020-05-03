@@ -1,0 +1,11 @@
+Please run the code from INSIDE the "src" directory.
+
+Python 3.6.9 was used for the assignment.
+
+
+Data preparation and division into test and train has been done using the code in file
+`PartDataPrep.py`. After the preprocessing, the data is saved in CSV files to be used by other two
+python programs.
+
+Part 1 (hand-written Neural Network) is available in file `Part1.py`
+Part 2 (sklearn Neural Network) is available in file `Part2.py`
